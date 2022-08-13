@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
         maven {
             name = "sonatype"
@@ -49,36 +49,31 @@ jar {
 }
 
 repositories {
-	maven { //MinecraftForge
-		name "MinecraftForge Maven"
-		url "http://files.minecraftforge.net/maven/"
-	}
-
     maven {
         name 'Chisel'
-        url "http://maven.tterrag.com/"
+        url "https://maven.tterrag.com/"
     }
 
     maven {
         name = "thiakil"
-        url = "http://maven.thiakil.com"
+        url = "https://maven.thiakil.com"
     }
 
     maven {
         name 'JEI'
-        url "http://dvs1.progwml6.com/files/maven"
+        url "https://dvs1.progwml6.com/files/maven"
     }
 
     maven {
         name 'jared'
-        url "http://maven.blamejared.com"
+        url "https://maven.blamejared.com/"
     }
 }
  
 dependencies {
     testCompile group: 'junit', name: 'junit', version:'4.11'
 
-    deobfCompile "mezz.jei:jei_1.12:4.7.0.67"
+    deobfCompile "mezz.jei:jei_1.12.2:4.16.1.302"
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}"
     deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-${crafttweaker_version}"
