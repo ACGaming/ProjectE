@@ -56,6 +56,8 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 
 	private void tick(ItemStack stack, EntityPlayer player)
 	{
+        player.fallDistance = 0;
+
 		if (ItemHelper.getOrCreateCompound(stack).getInteger(TAG_MODE) > 1)
 		{
 			// Repel on both sides - smooth animation
@@ -121,8 +123,6 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
 		}
 
 		removeEmc(stack, EMCHelper.removeFractionalEMC(stack, toRemove));
-
-		playerMP.fallDistance = 0;
 	}
 
 	private boolean isFlyingEnabled(ItemStack stack)
