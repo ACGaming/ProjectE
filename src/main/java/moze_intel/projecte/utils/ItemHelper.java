@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary
@@ -99,8 +100,7 @@ public final class ItemHelper
 			}
 		}
 
-		list.removeIf(ItemStack::isEmpty);
-		list.sort(Comparators.ITEMSTACK_ASCENDING);
+		list.stream().filter(stack -> !stack.isEmpty()).collect(Collectors.toList()).sort(Comparators.ITEMSTACK_ASCENDING);
 	}
 
 	/**
