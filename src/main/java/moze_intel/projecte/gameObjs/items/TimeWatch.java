@@ -207,8 +207,8 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			for (TileEntity tile : list)
 			{
 				if (!tile.isInvalid() && tile instanceof ITickable
-						&& !internalBlacklist.contains(tile.getClass().toString())
-						&& !blacklist.contains(TileEntity.getKey(tile.getClass()).toString()))
+						&& !internalBlacklist.contains(tile.getClass().getName())
+						&& !blacklist.contains(tile.getBlockType().getRegistryName().getNamespace() + ":" + tile.getDisplayName().getUnformattedText()))
 				{
 					((ITickable) tile).update();
 				}
