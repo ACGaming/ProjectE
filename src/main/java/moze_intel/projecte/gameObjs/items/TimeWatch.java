@@ -25,13 +25,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -46,19 +44,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
 {
 	// TODO 1.13 remove
-	private static final Set<String> internalBlacklist = Sets.newHashSet(
+	public static final Set<String> internalBlacklist = Sets.newHashSet(
 			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
 			"com.sci.torcherino.tile.TileTorcherino",
 			"com.sci.torcherino.tile.TileCompressedTorcherino",
 			"thaumcraft.common.tiles.crafting.TileSmelter"
 	);
 
-	public TimeWatch() 
+	public TimeWatch()
 	{
 		this.setTranslationKey("time_watch");
 		this.setMaxStackSize(1);
@@ -90,10 +89,10 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 	}
 
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld) 
+	public void onUpdate(ItemStack stack, World world, Entity entity, int invSlot, boolean isHeld)
 	{
 		super.onUpdate(stack, world, entity, invSlot, isHeld);
-		
+
 		if (!(entity instanceof EntityPlayer) || invSlot > 8)
 		{
 			return;
@@ -138,16 +137,16 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 		EntityPlayer player = (EntityPlayer) entity;
 		long reqEmc = EMCHelper.removeFractionalEMC(stack, getEmcPerTick(this.getCharge(stack)));
-		
+
 		if (!consumeFuel(player, stack, reqEmc, true))
 		{
 			return;
 		}
-		
+
 		int charge = this.getCharge(stack);
 		int bonusTicks;
 		float mobSlowdown;
-		
+
 		if (charge == 0)
 		{
 			bonusTicks = 8;
@@ -163,7 +162,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			bonusTicks = 16;
 			mobSlowdown = 0.12F;
 		}
-			
+
 		AxisAlignedBB bBox = player.getEntityBoundingBox().grow(8);
 
 		speedUpTileEntities(world, bonusTicks, bBox);
@@ -200,15 +199,13 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			return;
 		}
 
-		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchTEBlacklist);
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
+
 		for (int i = 0; i < bonusTicks; i++)
 		{
 			for (TileEntity tile : list)
 			{
-				if (!tile.isInvalid() && tile instanceof ITickable
-						&& !internalBlacklist.contains(tile.getClass().getName())
-						&& !blacklist.contains(tile.getBlockType().getRegistryName().getNamespace() + ":" + tile.getDisplayName().getUnformattedText()))
+				if (!tile.isInvalid() && tile instanceof ITickable)
 				{
 					((ITickable) tile).update();
 				}
@@ -313,7 +310,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public void onWornTick(ItemStack stack, EntityLivingBase player) 
+	public void onWornTick(ItemStack stack, EntityLivingBase player)
 	{
 		this.onUpdate(stack, player.getEntityWorld(), player, 0, false);
 	}
@@ -328,14 +325,14 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player) 
+	public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
 	{
 		return true;
 	}
 
 	@Override
 	@Optional.Method(modid = "baubles")
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) 
+	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
 	{
 		return true;
 	}

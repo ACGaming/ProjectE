@@ -3,6 +3,8 @@ package moze_intel.projecte.utils;
 import com.google.common.collect.Lists;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.TimeWatch;
+
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -37,6 +39,7 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -47,13 +50,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Helper class for anything that touches a World.
@@ -377,7 +374,16 @@ public final class WorldHelper
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile != null)
 			{
-				list.add(tile);
+				ResourceLocation registryName = tile.getBlockType().getRegistryName();
+				ResourceLocation tileName = TileEntity.getKey(tile.getClass());
+				if (registryName != null && tileName != null)
+				{
+					String combinedName = registryName.getNamespace() + ":" + tileName;
+					if (!TimeWatch.internalBlacklist.contains(tile.getClass().getName()) && !Arrays.asList(ProjectEConfig.effects.timeWatchTEBlacklist).contains(combinedName))
+					{
+						list.add(tile);
+					}
+				}
 			}
 		}
 
