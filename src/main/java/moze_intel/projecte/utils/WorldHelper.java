@@ -5,6 +5,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.items.TimeWatch;
 
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -372,23 +373,40 @@ public final class WorldHelper
 		for (BlockPos pos : getPositionsFromBox(bBox))
 		{
 			TileEntity tile = world.getTileEntity(pos);
-			if (tile != null)
+
+			if (tile != null && !(tile instanceof DMPedestalTile) && !isBlacklisted(tile))
 			{
-				ResourceLocation registryName = tile.getBlockType().getRegistryName();
-				ResourceLocation tileName = TileEntity.getKey(tile.getClass());
-				if (registryName != null && tileName != null)
-				{
-					String combinedName = registryName.getNamespace() + ":" + tileName;
-					if (!TimeWatch.internalBlacklist.contains(tile.getClass().getName()) && !Arrays.asList(ProjectEConfig.effects.timeWatchTEBlacklist).contains(combinedName))
-					{
-						list.add(tile);
-					}
-				}
+				list.add(tile);
 			}
 		}
 
 		return list;
 	}
+
+	public static boolean isBlacklisted(TileEntity tile) {
+		Class tileClass = tile.getClass();
+		ResourceLocation registryName = tile.getBlockType().getRegistryName();
+		ResourceLocation tileName = TileEntity.getKey(tileClass);
+
+		if (tileClass.getName().startsWith("mrtjp.projectred") || tileClass.getName().contains("TileMultipart")) {
+			return true;
+		}
+
+		if (registryName != null && tileName != null) {
+			String combinedName = registryName.getNamespace() + ":" + tileName;
+			return TimeWatch.internalBlacklist.contains(tileClass.getName()) || PECore.externalTEBlacklist.contains(combinedName);
+		}
+
+		return false;
+	}
+
+	public static boolean isBlacklisted(Block block) {
+		Class blockClass = block.getClass();
+
+		return TimeWatch.internalBlacklist.contains(blockClass.getName()) || PECore.externalBlockBlacklist.contains(block.getRegistryName().toString());
+	}
+
+
 
 	/**
 	 * Gravitates an entity, vanilla xp orb style, towards a position
