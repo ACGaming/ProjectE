@@ -2,7 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -25,11 +24,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -41,10 +42,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedestalItem, IItemCharge
@@ -54,7 +53,12 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			"Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
 			"com.sci.torcherino.tile.TileTorcherino",
 			"com.sci.torcherino.tile.TileCompressedTorcherino",
-			"thaumcraft.common.tiles.crafting.TileSmelter"
+			"thaumcraft.common.tiles.crafting.TileSmelter",
+			"TileMultipart_cmp$$0",
+			"TileMultipart_cmp$$1",
+			"TileMultipart_cmp$$2",
+			"codechicken.multipart.TileMultipart",
+			"codechicken.multipart.BlockMultipart"
 	);
 
 	public TimeWatch()
@@ -199,6 +203,7 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 			return;
 		}
 
+
 		List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
 
 		for (int i = 0; i < bonusTicks; i++)
@@ -213,22 +218,19 @@ public class TimeWatch extends ItemPE implements IModeChanger, IBauble, IPedesta
 		}
 	}
 
-	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox)
-	{
+	private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox) {
 		if (bBox == null || bonusTicks == 0) // Sanity check the box for chunk unload weirdness
 		{
 			return;
 		}
-
-		List<String> blacklist = Arrays.asList(ProjectEConfig.effects.timeWatchBlockBlacklist);
-		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox))
-		{
-			for (int i = 0; i < bonusTicks; i++)
-			{
+		for (BlockPos pos : WorldHelper.getPositionsFromBox(bBox)) {
+			for (int i = 0; i < bonusTicks; i++) {
 				IBlockState state = world.getBlockState(pos);
 				Block block = state.getBlock();
+
 				if (block.getTickRandomly()
-						&& !blacklist.contains(block.getRegistryName().toString())
+						&& !(block.hasTileEntity()) //Do not double speed up Tile Entities. These are already handled up in speedUpTileEntities
+						&& !(WorldHelper.isBlacklisted(block))
 						&& !(block instanceof BlockLiquid) // Don't speed vanilla non-source blocks - dupe issues
 						&& !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as well
 						&& !(block instanceof IGrowable)

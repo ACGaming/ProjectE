@@ -52,9 +52,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION, acceptedMinecraftVersions = "[1.12,]", dependencies = PECore.DEPS, updateJSON = PECore.UPDATE_JSON)
 @Mod.EventBusSubscriber(modid = PECore.MODID)
@@ -77,6 +75,8 @@ public class PECore
 	
 	@SidedProxy(clientSide = "moze_intel.projecte.proxies.ClientProxy", serverSide = "moze_intel.projecte.proxies.ServerProxy")
 	public static IProxy proxy;
+	public static HashSet<String> externalTEBlacklist = new HashSet<>();
+	public static HashSet<String> externalBlockBlacklist = new HashSet<>();
 
 	public static final List<String> uuids = new ArrayList<>();
 
@@ -147,6 +147,18 @@ public class PECore
 		fixer.registerWalker(FixTypes.BLOCK_ENTITY, new CapInventoryWalker(
 				ImmutableSet.of(RelayMK1Tile.class, RelayMK2Tile.class, RelayMK3Tile.class),
 				"Input", "Output"));
+
+		initializeExternalBlacklist();
+
+	}
+
+	private void initializeExternalBlacklist()
+	{
+		String[] timeWatchTEBlacklist = ProjectEConfig.effects.timeWatchTEBlacklist;
+		externalTEBlacklist = new HashSet<>(Arrays.asList(timeWatchTEBlacklist));
+
+		String[] timeWatchBlockBlacklist = ProjectEConfig.effects.timeWatchBlockBlacklist;
+		externalBlockBlacklist = new HashSet<>(Arrays.asList(timeWatchBlockBlacklist));
 	}
 
 	@EventHandler
