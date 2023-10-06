@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import com.google.common.base.Predicates;
 import gnu.trove.map.hash.TIntLongHashMap;
+import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -59,7 +60,7 @@ public class GemLegs extends GemArmorBase
     {
         if (world.isRemote)
         {
-            if (player.isSneaking() && !player.onGround && player.motionY > -8 && !jumpedRecently(player))
+            if (player.isSneaking() && !PECore.proxy.isJumpPressed() && !player.onGround && player.motionY > -8 && !jumpedRecently(player))
             {
                 player.motionY -= 0.32F;
             }
