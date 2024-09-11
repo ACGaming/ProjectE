@@ -15,7 +15,8 @@
         "1.12.2-PE1.4.4": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
         "1.12.2-PE1.4.5": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
         "1.12.2-PE1.4.6": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
-        "1.12.2-PE1.4.7": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
+        "1.12.2-PE1.4.7": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
+        "1.12.2-PE1.4.8": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information."
     },
     "1.14.4": {
         "1.14.4-PE1.0.0B": "See https://minecraft.curseforge.com/projects/projecte/files for detailed information.",
@@ -25,8 +26,8 @@
     "promos": {
         "1.12-latest": "1.12-PE1.3.2h",
         "1.12-recommended": "1.12-PE1.3.2h",
-        "1.12.2-latest": "1.12.2-PE1.4.7",
-        "1.12.2-recommended": "1.12.2-PE1.4.7",
+        "1.12.2-latest": "1.12.2-PE1.4.8",
+        "1.12.2-recommended": "1.12.2-PE1.4.8",
         "1.14.4-latest": "1.14.4-PE1.0.1B",
         "1.14.4-recommended": "1.14.4-PE1.0.1B"
     }

@@ -147,6 +147,10 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 		{
 			--furnaceBurnTime;
 		}
+		else
+		{
+			furnaceBurnTime = 0;
+		}
 		
 		if (!this.getWorld().isRemote)
 		{
