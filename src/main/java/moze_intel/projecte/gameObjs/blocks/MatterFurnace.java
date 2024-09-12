@@ -32,7 +32,7 @@ public class MatterFurnace extends BlockDirection
 {
 	private final boolean isActive;
 	private final boolean isHighTier;
-	private static boolean isUpdating;
+	private boolean isUpdating;
 
 	public MatterFurnace(boolean active, boolean isRM) 
 	{

@@ -350,12 +350,12 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		furnaceBurnTime = nbt.getShort("BurnTime");
-		furnaceCookTime = nbt.getShort("CookTime");
+		furnaceBurnTime = nbt.getInteger("BurnTime");
+		furnaceCookTime = nbt.getInteger("CookTime");
 		inputInventory.deserializeNBT(nbt.getCompoundTag("Input"));
 		outputInventory.deserializeNBT(nbt.getCompoundTag("Output"));
 		fuelInv.deserializeNBT(nbt.getCompoundTag("Fuel"));
-		currentItemBurnTime = getItemBurnTime(getFuelItem());
+		currentItemBurnTime = nbt.getInteger("CurrentItemBurnTime");
 	}
 	
 	@Nonnull
@@ -363,8 +363,9 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		nbt = super.writeToNBT(nbt);
-		nbt.setShort("BurnTime", (short) furnaceBurnTime);
-		nbt.setShort("CookTime", (short) furnaceCookTime);
+		nbt.setInteger("BurnTime", furnaceBurnTime);
+		nbt.setInteger("CookTime", furnaceCookTime);
+		nbt.setInteger("CurrentItemBurnTime", currentItemBurnTime);
 		nbt.setTag("Input", inputInventory.serializeNBT());
 		nbt.setTag("Output", outputInventory.serializeNBT());
 		nbt.setTag("Fuel", fuelInv.serializeNBT());
