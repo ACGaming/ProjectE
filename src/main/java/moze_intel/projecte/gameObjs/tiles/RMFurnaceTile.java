@@ -277,7 +277,49 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 	
 	private void pushToInventories()
 	{
-		// todo push to others
+		for (EnumFacing direction : EnumFacing.VALUES)
+		{
+			TileEntity tile = this.getWorld().getTileEntity(pos.offset(direction));
+			if (direction == EnumFacing.UP || tile == null || tile instanceof TileEntityHopper || tile instanceof TileEntityDropper)
+			{
+				continue;
+			}
+
+			IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction.getOpposite());
+
+			if (handler == null)
+			{
+				if (tile instanceof ISidedInventory)
+				{
+					handler = new SidedInvWrapper((ISidedInventory) tile, direction.getOpposite());
+				}
+				else if (tile instanceof IInventory) {
+					handler = new InvWrapper((IInventory) tile);
+				}
+				else
+				{
+					continue;
+				}
+			}
+
+			for (int i = 0; i < outputInventory.getSlots(); i++)
+			{
+				ItemStack stackInSlot = outputInventory.getStackInSlot(i);
+				if (!stackInSlot.isEmpty())
+				{
+					ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, stackInSlot, false);
+					int successfullyTransferred = stackInSlot.getCount() - remainder.getCount();
+					if (successfullyTransferred > 0)
+					{
+						outputInventory.extractItem(i, successfullyTransferred, false);
+						if (outputInventory.getStackInSlot(i).isEmpty())
+						{
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private void smeltItem()
