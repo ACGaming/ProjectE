@@ -293,7 +293,8 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 				{
 					handler = new SidedInvWrapper((ISidedInventory) tile, direction.getOpposite());
 				}
-				else if (tile instanceof IInventory) {
+				else if (tile instanceof IInventory)
+				{
 					handler = new InvWrapper((IInventory) tile);
 				}
 				else
@@ -305,7 +306,7 @@ public class RMFurnaceTile extends TileEmc implements IEmcAcceptor
 			for (int i = 0; i < outputInventory.getSlots(); i++)
 			{
 				ItemStack stackInSlot = outputInventory.getStackInSlot(i);
-				if (!stackInSlot.isEmpty())
+				if (!stackInSlot.isEmpty() && stackInSlot.getCount() >= stackInSlot.getMaxStackSize())
 				{
 					ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, stackInSlot, false);
 					int successfullyTransferred = stackInSlot.getCount() - remainder.getCount();
